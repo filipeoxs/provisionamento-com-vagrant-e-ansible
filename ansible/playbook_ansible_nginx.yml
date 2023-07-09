@@ -1,0 +1,4 @@
+- hosts: localhost
+  become: yes # executa como root
+  roles: # executa a role do nginx
+    - nginx 
