@@ -1,0 +1,31 @@
+{
+ "v1": {
+  "datasource": null,
+  "init": {
+   "errors": [],
+   "finished": null,
+   "start": null
+  },
+  "init-local": {
+   "errors": [],
+   "finished": null,
+   "start": null
+  },
+  "modules-config": {
+   "errors": [],
+   "finished": 1688956990.3362985,
+   "start": 1688956988.2852526
+  },
+  "modules-final": {
+   "errors": [],
+   "finished": 1688956993.3619952,
+   "start": 1688956991.3222706
+  },
+  "modules-init": {
+   "errors": [],
+   "finished": null,
+   "start": null
+  },
+  "stage": null
+ }
+}
