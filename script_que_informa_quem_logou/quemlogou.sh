@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Defina o diretório onde o arquivo .txt será armazenado
-LOG_FILE="/home/vagrant_script/login.txt"
+LOG_FILE="/home/DLIPEA/login.txt"
 
 # Função para registrar o login no arquivo .txt
 function registrar_login {
@@ -12,7 +12,7 @@ function registrar_login {
 trap 'registrar_login' INT TERM EXIT
 
 # Defina o diretório na VM onde você deseja salvar o arquivo .txt
-LOCAL_DIR="/home/vagrant_script"
+LOCAL_DIR="/home/DLIPEA/"
 
 # Certifique-se de que o diretório existe e tem as permissões adequadas
 mkdir -p "$LOCAL_DIR"
