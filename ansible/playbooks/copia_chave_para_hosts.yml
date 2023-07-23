@@ -1,0 +1,34 @@
+---
+- name: Generate SSH key and copy to inventory hosts
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Generate SSH key
+      ansible.builtin.openssl_privatekey:
+        path: "/etc/ansible/keys/ansible_key.pem"
+        type: rsa
+        size: 2048
+        regenerate: yes
+        owner: ansible
+        group: ansible
+        mode: 0600
+      register: ssh_key
+
+    - name: Copy SSH key to inventory hosts
+      ansible.builtin.copy:
+        content: "{{ ssh_key.private_key }}"
+        dest: "/var/ansible/.ssh/id_rsa"
+        owner: ansible
+        group: ansible
+        mode: 0600
+      delegate_to: "{{ inventory_hostname }}"
+
+    - name: Add SSH key to authorized_keys file
+      ansible.builtin.lineinfile:
+        path: "/home/ansible/.ssh/authorized_keys"
+        line: "{{ ssh_key.public_key }}"
+        create: yes
+        owner: ansible
+        group: ansible
+        mode: 0600
+      delegate_to: "{{ inventory_hostname }}"

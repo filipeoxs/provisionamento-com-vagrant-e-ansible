@@ -1,0 +1,98 @@
+---
+- name: Instalação do Zabbix Server
+  hosts: monitoring_machines
+  become: yes
+
+  tasks:
+    - name: Atualizar repositórios e pacotes
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Baixar o pacote do Zabbix
+      get_url:
+        url: https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+ubuntu20.04_all.deb
+        dest: /tmp/zabbix-release.deb
+
+    - name: Instalar o pacote do Zabbix
+      dpkg:
+        deb: /tmp/zabbix-release.deb
+
+    - name: Atualizar repositórios novamente
+      apt:
+        update_cache: yes
+
+    - name: Instalar o servidor Zabbix e o frontend
+      apt:
+        name:
+          - zabbix-server-mysql
+          - zabbix-frontend-php
+          - zabbix-apache-conf
+          - zabbix-sql-scripts
+          - zabbix-agent
+          - mysql-server
+        state: present
+
+    - name: Definir a senha do usuário root
+      shell: echo "root:P@ssW0rD" | sudo chpasswd
+
+    - name: Criar arquivo de configuração do MySQL
+      copy:
+        content: "[client]\npassword=P@ssW0rD"
+        dest: /etc/mysql/my.cnf
+
+    - name: Reiniciar o serviço do MySQL
+      service:
+        name: mysql
+        state: restarted
+
+    - name: Criar usuário e conceder permissões
+      mysql_user:
+        name: zabbix
+        password: P@ssW0rD
+        priv: "*.*:ALL,GRANT"
+        state: present
+
+    - name: Criar banco de dados para o Zabbix
+      mysql_db:
+        name: zabbix
+        state: present
+        login_user: zabbix
+        login_password: P@ssW0rD
+
+    - name: Importar esquema e dados iniciais para o banco de dados do Zabbix
+      shell: zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql -uzabbix -pP@ssW0rD zabbix
+
+    - name: Configurar o banco de dados no arquivo de configuração do Zabbix
+      replace:
+        path: /etc/zabbix/zabbix_server.conf
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}"
+      loop:
+        - regexp: '^DBHost=localhost$'
+          replace: 'DBHost=localhost'
+        - regexp: '^DBName=zabbix$'
+          replace: 'DBName=zabbix'
+        - regexp: '^DBUser=zabbix$'
+          replace: 'DBUser=zabbix'
+        - regexp: '^# DBPassword=$'
+          replace: 'DBPassword=P@ssW0rD'
+
+    - name: Reiniciar serviços
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      loop:
+        - zabbix-server
+        - zabbix-agent
+        - apache2
+
+    - name: Limpar arquivos de instalação
+      file:
+        path: /tmp/zabbix-release.deb
+        state: absent
+
+    - name: Exibir mensagem de conclusão
+      debug:
+        msg: "A instalação do Zabbix foi concluída."
