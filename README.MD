@@ -1,12 +1,3 @@
-# Hosts que fazem parte desses scripts
-
-Zabbix 6 -> 192.168.1.3
-Matomo -> 192.168.1.2
-Ansible -> 192.168.1.100
-Jenkins -> 192.168.1.1
-nginx -> 192.168.1.4
-apache -> 192.168.1.6
-docker -> 192.168.1.5
 
 # Comando para criar o Vagrantfile
 # O focal64 é o ubuntu 20
