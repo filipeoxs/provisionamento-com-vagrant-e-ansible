@@ -1,3 +1,13 @@
+# Hosts que fazem parte desses scripts
+
+Zabbix 6 -> 192.168.1.3
+Matomo -> 192.168.1.2
+Ansible -> 192.168.1.100
+Jenkins -> 192.168.1.1
+nginx -> 192.168.1.4
+apache -> 192.168.1.6
+docker -> 192.168.1.5
+
 # Comando para criar o Vagrantfile
 # O focal64 é o ubuntu 20
 vagrant inint ubuntu/focal64 
@@ -16,3 +26,6 @@ vagrant reload
 
 # Para alterar algo que mudou na config do ansible
 vagrant provision
+
+# Para verificar se as vms estão se comunicando
+ansible -i nome_do_arquivo_de_inventario  -u usuario_que_vai_autenticar -k -m ping

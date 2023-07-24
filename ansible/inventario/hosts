@@ -1,0 +1,17 @@
+[linux]
+# Jenkins
+192.168.1.31 
+
+[docker]
+
+[nginx]
+192.168.1.1
+[zabbix]
+
+[jenkins]
+
+[nginx:vars]
+ansible_user=vagrant
+
+[docker:var]
+ansible_user=vagrant
